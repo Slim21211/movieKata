@@ -1,5 +1,6 @@
-import React, { Component } from "react";
-import "./movie-card.css";
+import React, { Component } from 'react';
+import './movie-card.css';
+import { format } from 'date-fns';
 
 export class MovieCard extends Component {
   render() {
@@ -15,7 +16,7 @@ export class MovieCard extends Component {
           </div>
           <div className="movie-card__info">
             <h2 className="movie-card__title">{title}</h2>
-            <span className="movie-card__date">{date}</span>
+            <span className="movie-card__date">{format(new Date(date), 'MMMM dd, yyyy')}</span>
             <div className="movie-card__genre genre">
               {genres.map((item) => {
                 return (

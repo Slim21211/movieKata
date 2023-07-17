@@ -12,6 +12,7 @@
 .movie-card__poster {
     width: 183px;
     height: 281px;
+    margin-right: 20px;
 }
 
 .movie-card__poster img {
@@ -65,4 +66,5 @@
     font-style: normal;
     font-weight: 400;
     line-height: 22px;
+    overflow: hidden;
 }

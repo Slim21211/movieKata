@@ -1,5 +1,6 @@
 export default class MovieDB {
-  url = 'https://api.themoviedb.org/3/search/movie?query=return&page=1';
+  page = Math.floor(Math.random() * 10);
+  url = `https://api.themoviedb.org/3/search/movie?query=return&page=${this.page}`;
   options = {
     method: 'GET',
     headers: {
@@ -18,6 +19,6 @@ export default class MovieDB {
   }
 
   getAllMovie() {
-    return this.getFilms();
+    return this.getFilms().then((data) => data.results);
   }
 }
