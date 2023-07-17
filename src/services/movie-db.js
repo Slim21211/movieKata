@@ -1,5 +1,5 @@
 export default class MovieDB {
-  page = Math.floor(Math.random() * 10);
+  page = Math.floor(Math.random() * 100);
   url = `https://api.themoviedb.org/3/search/movie?query=return&page=${this.page}`;
   options = {
     method: 'GET',

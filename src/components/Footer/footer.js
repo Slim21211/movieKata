@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+// // import React, { Component } from 'react';
 
-export class Footer extends Component {
-  render() {
-    return null;
-  }
-}
+// export class Footer extends Component {
+//   render() {
+//     return null;
+//   }
+// }

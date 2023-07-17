@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import { LoadingOutlined } from '@ant-design/icons';
+import { Spin, Alert, Space } from 'antd';
 
 import { MovieCard } from '../Movie-card/movie-card';
 import MovieDB from '../../services/movie-db';
+import './movie-list.css';
 
 export class MovieList extends Component {
   movieList = new MovieDB();
@@ -40,13 +43,27 @@ export class MovieList extends Component {
     );
   }
 
+  antIcon = (
+    <LoadingOutlined
+      style={{
+        fontSize: 48,
+      }}
+      spin
+    />
+  );
+
   render() {
     const { error, isLoaded, movies } = this.state;
     if (error) {
-      return <p> Error {error.message}</p>;
+      return (
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <Alert message={`Error ${error.message}`} type="error" showIcon />
+        </Space>
+      );
     } else if (!isLoaded) {
-      return <p>Loading...</p>;
+      return <Spin indicator={this.antIcon} className="spinner" />;
     } else {
+      console.log(this.state);
       return (
         <>
           {movies.map((item) => (
@@ -56,6 +73,7 @@ export class MovieList extends Component {
               genres={this.state.genres}
               discription={item.overview}
               key={item.id}
+              poster={item.poster_path}
             />
           ))}
         </>

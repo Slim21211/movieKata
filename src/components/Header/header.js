@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+// import React, { Component } from 'react';
 
-export class Header extends Component {
-  render() {
-    return null;
-  }
-}
+// export class Header extends Component {
+//   render() {
+//     return null;
+//   }
+// }
