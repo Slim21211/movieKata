@@ -9,7 +9,7 @@ export class MovieCard extends Component {
       <>
         <div className="movie-card">
           <div className="movie-card__poster">
-            <img src={`https://image.tmdb.org/t/p/w185/${poster}`} alt="poster"></img>
+            {<img src={`https://image.tmdb.org/t/p/w185/${poster}`} alt="poster"></img>}
           </div>
           <div className="movie-card__info">
             <h2 className="movie-card__title">{title}</h2>

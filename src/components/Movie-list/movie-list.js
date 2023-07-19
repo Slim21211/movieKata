@@ -12,22 +12,22 @@ export class MovieList extends Component {
     movies: [],
     isLoaded: false,
     error: false,
-    title: 'The way back',
-    date: 'March 5, 2020',
     genres: ['Action', 'Drama'],
-    discription:
-      'A former basketball all-star, who has lost his wife and family foundation in a struggle with addiction attempts to regain his soul and salvation by becoming the coach of a disparate ethnically mixed high ...',
   };
 
-  constructor() {
-    super();
-    this.newFilm();
+  componentDidMount() {
+    const { page } = this.props;
+    this.newFilm(page);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps !== this.props.page) this.newFilm(this.props.page);
   }
 
   // test = this.movieList.getAllMovie().then((body) => console.log(body));
 
-  newFilm() {
-    this.movieList.getAllMovie().then(
+  newFilm(page) {
+    this.movieList.getAllMovie(page).then(
       (body) => {
         this.setState({
           isLoaded: true,
@@ -63,7 +63,6 @@ export class MovieList extends Component {
     } else if (!isLoaded) {
       return <Spin indicator={this.antIcon} className="spinner" />;
     } else {
-      console.log(this.state);
       return (
         <>
           {movies.map((item) => (

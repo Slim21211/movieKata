@@ -1,20 +1,34 @@
 import React, { Component } from 'react';
-
 // import { Header } from '../Header/header';
-// import { SearchForm } from '../Search-form/search-form';
+import { Pagination } from 'antd';
+
+import { SearchForm } from '../Search-form/search-form';
 import { MovieList } from '../Movie-list/movie-list';
 // import { Footer } from '../Footer/footer';
-import { CheckConnection } from '../../services/check-connection';
 import './app.css';
 
 export class App extends Component {
+  state = {
+    currentPage: 2,
+  };
+
+  onChange = (page) => {
+    this.setState({
+      currentPage: page,
+    });
+  };
+
   render() {
     return (
-      <CheckConnection>
-        <div className="main">
-          <MovieList />
+      <div className="main">
+        <div className="search-form-wrapper">
+          <SearchForm />
         </div>
-      </CheckConnection>
+        <div className="movie-list-wrapper">
+          <MovieList page={this.state.currentPage} />
+        </div>
+        <Pagination className="pagination" current={this.state.currentPage} onChange={this.onChange} total={5000} />
+      </div>
     );
   }
 }

@@ -6,10 +6,15 @@
 
 .main {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     flex-wrap: wrap;
     max-width: 1010px;
     height: auto;
     margin: 0 auto;
     padding: 32px;
+}
+
+.pagination {
+    margin: 0 auto;
 }

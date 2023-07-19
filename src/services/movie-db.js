@@ -1,6 +1,5 @@
 export default class MovieDB {
-  page = Math.floor(Math.random() * 100);
-  url = `https://api.themoviedb.org/3/search/movie?query=return&page=${this.page}`;
+  url = 'https://api.themoviedb.org/3/search/movie?query=return&page=';
   options = {
     method: 'GET',
     headers: {
@@ -10,15 +9,16 @@ export default class MovieDB {
     },
   };
 
-  async getFilms() {
-    const response = await fetch(this.url, this.options);
+  async getFilms(page) {
+    const response = await fetch(`${this.url}${page}`, this.options);
     if (!response.ok) {
       throw new Error(response.status);
     }
     return await response.json();
   }
 
-  getAllMovie() {
-    return this.getFilms().then((data) => data.results);
+  async getAllMovie(page) {
+    const data = await this.getFilms(page);
+    return data.results;
   }
 }
