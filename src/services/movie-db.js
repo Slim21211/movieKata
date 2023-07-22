@@ -1,5 +1,6 @@
 export default class MovieDB {
-  url = 'https://api.themoviedb.org/3/search/movie?query=return&page=';
+  url = 'https://api.themoviedb.org/3/search/movie?';
+  query = 'return';
   options = {
     method: 'GET',
     headers: {
@@ -9,16 +10,12 @@ export default class MovieDB {
     },
   };
 
-  async getFilms(page) {
-    const response = await fetch(`${this.url}${page}`, this.options);
+  async getApiFilms(page, title) {
+    const response = await fetch(`${this.url}query=${title}&page=${page}`, this.options);
+
     if (!response.ok) {
       throw new Error(response.status);
     }
     return await response.json();
-  }
-
-  async getAllMovie(page) {
-    const data = await this.getFilms(page);
-    return data.results;
   }
 }
