@@ -3,8 +3,10 @@ import React, { Component } from 'react';
 import { Pagination } from 'antd';
 import { debounce } from 'lodash';
 
+import { GenresProvider } from '../genres-context/genres-context';
 import { SearchForm } from '../Search-form/search-form';
 import { MovieList } from '../Movie-list/movie-list';
+import { Tabs } from '../Tabs/tabs';
 import MovieDB from '../../services/movie-db';
 
 // import { Footer } from '../Footer/footer';
@@ -22,10 +24,14 @@ export class App extends Component {
     movies: [],
     isLoaded: false,
     error: false,
-    genres: ['Action', 'Drama'],
+    genresList: [],
   };
 
   // test = this.movieDb.getApiFilms(this.state.currentPage, this.state.title).then((data) => console.log(data));
+  // testGenres = this.movieDb.getGenres().then((data) => console.log(data.genres));
+  // testID = this.movieDb.getSessionId().then((data) => console.log(data));
+  // testToken = this.movieDb.getSessionToken().then((data) => console.log(data));
+  // testCreate = this.movieDb.createSession().then((data) => console.log(data));
 
   onChangePage = (page) => {
     this.setState({
@@ -34,8 +40,12 @@ export class App extends Component {
     });
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     this.getFilms(this.state.currentPage, this.state.title);
+    this.getGenres();
+
+    this.sessionId = await this.movieDb.getSessionId();
+    localStorage.setItem('sessionID', this.sessionId);
   }
 
   componentDidUpdate(prevState) {
@@ -65,34 +75,64 @@ export class App extends Component {
       });
   }, 350);
 
-  onChange = (page, value) => {
-    this.getFilms(page, value);
+  async getGenres() {
+    await this.movieDb.getGenres().then((data) => {
+      this.setState({
+        genresList: data.genres,
+      });
+    });
+  }
+
+  onChangeRequest = (page, value) => {
+    let newTitle = value ? value : 'a';
+    this.setState({
+      title: newTitle,
+    });
+    this.getFilms(page, newTitle);
   };
+
+  findGenres(arr1, arr2) {
+    const finalGenres = [];
+    for (let i = 0; i < arr1.length; i++) {
+      for (let j = 0; j < arr2.length; j++) {
+        if (arr1[i].id === arr2[j]) {
+          finalGenres.push(arr1[i].name);
+        }
+      }
+    }
+    return finalGenres;
+  }
 
   render() {
     return (
-      <div className="main">
-        <div className="search-form-wrapper">
-          <SearchForm onChange={this.onChange} page={this.state.currentPage} />
-        </div>
-        <div className="movie-list-wrapper">
-          <MovieList
-            page={this.state.currentPage}
-            movies={this.state.movies}
-            isLoaded={this.state.isLoaded}
-            error={this.state.error}
-            genres={this.state.genres}
-            title={this.state.title}
+      <GenresProvider value={this.state.genresList}>
+        <div className="main">
+          <div className="tabs-wrapper">
+            <Tabs />
+          </div>
+          <div className="search-form-wrapper">
+            <SearchForm onChange={this.onChangeRequest} page={this.state.currentPage} />
+          </div>
+          <div className="movie-list-wrapper">
+            <MovieList
+              page={this.state.currentPage}
+              movies={this.state.movies}
+              isLoaded={this.state.isLoaded}
+              error={this.state.error}
+              title={this.state.title}
+              findGenres={this.findGenres}
+              sessionId={this.sessionId}
+            />
+          </div>
+          <Pagination
+            className="pagination"
+            current={this.state.currentPage}
+            onChange={this.onChangePage}
+            total={this.state.totalPage * 10}
+            showSizeChanger={false}
           />
         </div>
-        <Pagination
-          className="pagination"
-          current={this.state.currentPage}
-          onChange={this.onChangePage}
-          total={this.state.totalPage * 10}
-          showSizeChanger={false}
-        />
-      </div>
+      </GenresProvider>
     );
   }
 }

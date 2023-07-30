@@ -7,12 +7,6 @@ export class SearchForm extends Component {
     value: '',
   };
 
-  onChangeInput = (event) => {
-    this.setState({
-      value: event.target.value,
-    });
-  };
-
   render() {
     const { page, onChange } = this.props;
     return (

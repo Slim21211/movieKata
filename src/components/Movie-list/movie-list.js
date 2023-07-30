@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin, Alert, Space } from 'antd';
 
+import { GenresConsumer } from '../genres-context/genres-context';
 import { MovieCard } from '../Movie-card/movie-card';
 import './movie-list.css';
 
@@ -10,7 +11,6 @@ export class MovieList extends Component {
     movies: [],
     isLoaded: false,
     error: false,
-    genres: ['Action', 'Drama'],
   };
 
   antIcon = (
@@ -23,7 +23,7 @@ export class MovieList extends Component {
   );
 
   render() {
-    const { error, isLoaded, movies, genres } = this.props;
+    const { error, isLoaded, movies, findGenres, sessionId } = this.props;
     if (error) {
       return (
         <Space direction="vertical" style={{ width: '100%' }}>
@@ -33,27 +33,29 @@ export class MovieList extends Component {
     } else if (!isLoaded) {
       return <Spin indicator={this.antIcon} className="spinner" />;
     } else if (!movies.length) {
-      console.log(movies.title);
       return (
         <Space direction="vertical" style={{ width: '100%', marginBottom: 20 }}>
           <Alert message={'Not found. Change search request'} type="error" showIcon />
         </Space>
       );
     } else {
-      console.log(movies.title);
       return (
-        <>
-          {movies.map((item) => (
-            <MovieCard
-              title={item.title}
-              date={item.release_date}
-              genres={genres}
-              discription={item.overview}
-              key={item.id}
-              poster={item.poster_path}
-            />
-          ))}
-        </>
+        <GenresConsumer>
+          {(genresList) => {
+            return movies.map((item) => (
+              <MovieCard
+                title={item.title}
+                date={item.release_date}
+                genres={findGenres(genresList, item.genre_ids)}
+                discription={item.overview}
+                key={item.id}
+                poster={item.poster_path}
+                filmId={item.id}
+                sessionId={sessionId}
+              />
+            ));
+          }}
+        </GenresConsumer>
       );
     }
   }
