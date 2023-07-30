@@ -22,6 +22,7 @@ export class App extends Component {
     isCountChange: false,
     title: 'a',
     movies: [],
+    ratedMovies: [],
     isLoaded: false,
     error: false,
     genresList: [],
@@ -54,6 +55,8 @@ export class App extends Component {
         isPageChange: false,
       });
       this.getFilms(this.state.currentPage, this.state.title);
+      const testGetRated = this.movieDb.getRatedMovies(this.sessionId, 1);
+      console.log(testGetRated);
     }
   }
 
@@ -103,6 +106,14 @@ export class App extends Component {
     return finalGenres;
   }
 
+  rateFilm = async (id, session_id = this.sessionId, rating) => {
+    await this.movieDb.addRating(id, session_id, rating);
+    await this.movieDb.getRatedMovies(session_id, 1).then((data) => {
+      this.setState({ ratedMovies: data.results });
+      console.log(this.state.ratedMovies);
+    });
+  };
+
   render() {
     return (
       <GenresProvider value={this.state.genresList}>
@@ -113,7 +124,7 @@ export class App extends Component {
           <div className="search-form-wrapper">
             <SearchForm onChange={this.onChangeRequest} page={this.state.currentPage} />
           </div>
-          <div className="movie-list-wrapper">
+          <div className="movie-list-wrapper-active">
             <MovieList
               page={this.state.currentPage}
               movies={this.state.movies}
@@ -122,15 +133,16 @@ export class App extends Component {
               title={this.state.title}
               findGenres={this.findGenres}
               sessionId={this.sessionId}
+              rateFilm={(id, session_id, rating) => this.rateFilm(id, session_id, rating)}
+            />
+            <Pagination
+              className="pagination"
+              current={this.state.currentPage}
+              onChange={this.onChangePage}
+              total={this.state.totalPage * 10}
+              showSizeChanger={false}
             />
           </div>
-          <Pagination
-            className="pagination"
-            current={this.state.currentPage}
-            onChange={this.onChangePage}
-            total={this.state.totalPage * 10}
-            showSizeChanger={false}
-          />
         </div>
       </GenresProvider>
     );

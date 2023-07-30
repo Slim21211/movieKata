@@ -23,7 +23,7 @@ export class MovieList extends Component {
   );
 
   render() {
-    const { error, isLoaded, movies, findGenres, sessionId } = this.props;
+    const { error, isLoaded, movies, findGenres, sessionId, rateFilm } = this.props;
     if (error) {
       return (
         <Space direction="vertical" style={{ width: '100%' }}>
@@ -52,6 +52,7 @@ export class MovieList extends Component {
                 poster={item.poster_path}
                 filmId={item.id}
                 sessionId={sessionId}
+                rateFilm={(id, session_id, rating) => rateFilm(id, session_id, rating)}
               />
             ));
           }}

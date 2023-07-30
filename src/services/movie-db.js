@@ -53,6 +53,15 @@ export default class MovieDB {
     }
   }
 
+  async getRatedMovies(session_id, page) {
+    const response = await fetch(`
+    https://api.themoviedb.org/3/guest_session/${session_id}/rated/movies?api_key=${this._apiKey}&page=${page}`);
+    if (!response.ok) {
+      throw new Error(response.status);
+    }
+    return await response.json();
+  }
+
   // async ratedMovies() {
   //   const response = await fetch(
   //     `https://api.themoviedb.org/3/guest_session/${await this.getSessionId()}/rated/movies`

@@ -28,12 +28,8 @@ export class MovieCard extends Component {
     }
   }
 
-  rateFilm = (id, session_id, rating) => {
-    this.movieDb.addRating(id, session_id, rating);
-  };
-
   render() {
-    const { title, date, genres, discription, poster, filmId, sessionId } = this.props;
+    const { title, date, genres, discription, poster, filmId, sessionId, rateFilm } = this.props;
     try {
       return (
         <>
@@ -74,7 +70,7 @@ export class MovieCard extends Component {
                 count={10}
                 onChange={(value) => {
                   this.setState({ rating: value });
-                  this.rateFilm(filmId, sessionId, value);
+                  rateFilm(filmId, sessionId, value);
                 }}
               />
             </div>

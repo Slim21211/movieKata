@@ -8,7 +8,7 @@
     margin: 0 auto;
 }
 
-.movie-list-wrapper {
+.movie-list-wrapper-active {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
@@ -16,4 +16,8 @@
     height: auto;
     margin: 0 auto;
     /* padding: 32px; */
+}
+
+.movie-list-wrapper {
+    display: none;
 }
