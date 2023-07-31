@@ -3,10 +3,21 @@ import './tabs.css';
 
 export class Tabs extends Component {
   render() {
+    const { onChangeTab, activeTab } = this.props;
     return (
       <>
-        <button className="search-tab">Search</button>
-        <button className="rated-tab">Rated</button>
+        <button
+          className={activeTab === 'search' ? 'active-search-tab' : 'search-tab'}
+          onClick={() => onChangeTab('search')}
+        >
+          Search
+        </button>
+        <button
+          className={activeTab === 'rated' ? 'active-rated-tab' : 'rated-tab'}
+          onClick={() => onChangeTab('rated')}
+        >
+          Rated
+        </button>
       </>
     );
   }

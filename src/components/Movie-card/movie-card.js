@@ -15,13 +15,13 @@ export class MovieCard extends Component {
   };
 
   setColor() {
-    if (this.state.rating < 3) {
+    if (this.props.grade < 3) {
       return '#E90000';
     }
-    if (this.state.rating < 5) {
+    if (this.props.grade < 5) {
       return '#E97E00';
     }
-    if (this.state.rating < 7) {
+    if (this.props.grade < 7) {
       return '#E9D100';
     } else {
       return '#66E900';
@@ -29,7 +29,7 @@ export class MovieCard extends Component {
   }
 
   render() {
-    const { title, date, genres, discription, poster, filmId, sessionId, rateFilm } = this.props;
+    const { title, date, genres, discription, poster, grade, filmId, sessionId, rateFilm } = this.props;
     try {
       return (
         <>
@@ -45,7 +45,7 @@ export class MovieCard extends Component {
               <div className="movie-card-title-wrapper">
                 <h2 className="movie-card__title">{title}</h2>
                 <div className="movie-card-rating" style={{ border: `2px solid ${this.setColor()}` }}>
-                  {this.state.rating}
+                  {grade.toFixed(1)}
                 </div>
               </div>
 

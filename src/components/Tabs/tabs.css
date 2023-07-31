@@ -31,7 +31,18 @@
     cursor: pointer;
 }
 
-.search-tab::after {
+.active-search-tab {
+    position: relative;
+    border: none;
+    outline: none;
+    background: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #1890FF;
+}
+
+.active-search-tab::after {
     position: absolute;
     display: block;
     top: 30px;
@@ -57,11 +68,26 @@
     cursor: pointer;
 }
 
-.rated-tab::after {
+.active-rated-tab {
+    position: relative;
+    border: none;
+    outline: none;
+    background: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #1890FF;
+}
+
+.active-rated-tab:hover {
+    cursor: pointer;
+}
+
+.active-rated-tab::after {
     position: absolute;
-    display: none;
+    display: block;
     top: 30px;
-    left: -7.5px;
+    left: -9px;
     content: '';
     width: 65px;
     height: 2px;

@@ -4,8 +4,12 @@
     box-sizing: border-box;
 }
 
-.search-form-wrapper {
+.search-form-wrapper-active {
     margin-bottom: 32px;
+}
+
+.search-form-wrapper {
+    display: none;
 }
 
 .search-form {

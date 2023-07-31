@@ -6,7 +6,7 @@
 
 
 
-.movie-list-wrapper-active {
+.rated-list-wrapper-active {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
@@ -16,6 +16,6 @@
     /* padding: 32px; */
 }
 
-.movie-list-wrapper {
+.rated-list-wrapper {
     display: none;
 }

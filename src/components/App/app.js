@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 // import { Header } from '../Header/header';
-import { Pagination } from 'antd';
 import { debounce } from 'lodash';
+import { Spin, Alert, Space, Pagination } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
 import { GenresProvider } from '../genres-context/genres-context';
 import { SearchForm } from '../Search-form/search-form';
 import { MovieList } from '../Movie-list/movie-list';
 import { Tabs } from '../Tabs/tabs';
+import { RatedList } from '../Rated-list/rated-list';
 import MovieDB from '../../services/movie-db';
 
 // import { Footer } from '../Footer/footer';
@@ -26,7 +28,17 @@ export class App extends Component {
     isLoaded: false,
     error: false,
     genresList: [],
+    activeTab: 'search',
   };
+
+  antIcon = (
+    <LoadingOutlined
+      style={{
+        fontSize: 48,
+      }}
+      spin
+    />
+  );
 
   // test = this.movieDb.getApiFilms(this.state.currentPage, this.state.title).then((data) => console.log(data));
   // testGenres = this.movieDb.getGenres().then((data) => console.log(data.genres));
@@ -55,8 +67,6 @@ export class App extends Component {
         isPageChange: false,
       });
       this.getFilms(this.state.currentPage, this.state.title);
-      const testGetRated = this.movieDb.getRatedMovies(this.sessionId, 1);
-      console.log(testGetRated);
     }
   }
 
@@ -110,41 +120,89 @@ export class App extends Component {
     await this.movieDb.addRating(id, session_id, rating);
     await this.movieDb.getRatedMovies(session_id, 1).then((data) => {
       this.setState({ ratedMovies: data.results });
-      console.log(this.state.ratedMovies);
+    });
+  };
+
+  onChangeTab = (value) => {
+    this.setState({
+      activeTab: value,
     });
   };
 
   render() {
-    return (
-      <GenresProvider value={this.state.genresList}>
-        <div className="main">
-          <div className="tabs-wrapper">
-            <Tabs />
-          </div>
-          <div className="search-form-wrapper">
-            <SearchForm onChange={this.onChangeRequest} page={this.state.currentPage} />
-          </div>
-          <div className="movie-list-wrapper-active">
-            <MovieList
-              page={this.state.currentPage}
-              movies={this.state.movies}
-              isLoaded={this.state.isLoaded}
-              error={this.state.error}
-              title={this.state.title}
-              findGenres={this.findGenres}
-              sessionId={this.sessionId}
-              rateFilm={(id, session_id, rating) => this.rateFilm(id, session_id, rating)}
-            />
+    if (this.state.error) {
+      return (
+        <Space
+          direction="vertical"
+          style={{ width: '50%', marginTop: 50, position: 'absolute', left: '25%' }}
+          wrapperClassName="search-form-wrapper"
+        >
+          <Alert message={`Error ${this.state.error.message}`} type="error" showIcon />
+        </Space>
+      );
+    } else if (!this.state.isLoaded) {
+      return (
+        <Spin
+          indicator={this.antIcon}
+          className="spinner"
+          wrapperClassName="search-form-wrapper"
+          style={{ width: '100%', margin: 50 }}
+        />
+      );
+    } else if (!this.state.movies.length) {
+      return (
+        <Space direction="vertical" style={{ width: '100%', marginBottom: 20 }}>
+          <Alert message={'Not found. Change search request'} type="error" showIcon />
+        </Space>
+      );
+    } else {
+      return (
+        <GenresProvider value={this.state.genresList}>
+          <div className="main">
+            <div className="tabs-wrapper">
+              <Tabs onChangeTab={(value) => this.onChangeTab(value)} activeTab={this.state.activeTab} />
+            </div>
+            <div className={this.state.activeTab === 'search' ? 'search-form-wrapper-active' : 'search-form-wrapper'}>
+              <SearchForm onChange={this.onChangeRequest} page={this.state.currentPage} />
+            </div>
+            <div className={this.state.activeTab === 'search' ? 'movie-list-wrapper-active' : 'movie-list-wrapper'}>
+              <MovieList
+                page={this.state.currentPage}
+                movies={this.state.movies}
+                isLoaded={this.state.isLoaded}
+                error={this.state.error}
+                title={this.state.title}
+                findGenres={this.findGenres}
+                sessionId={this.sessionId}
+                rateFilm={(id, session_id, rating) => this.rateFilm(id, session_id, rating)}
+              />
+            </div>
             <Pagination
-              className="pagination"
+              className={this.state.activeTab === 'search' ? 'search-pagination-active' : 'search-pagination'}
               current={this.state.currentPage}
               onChange={this.onChangePage}
               total={this.state.totalPage * 10}
               showSizeChanger={false}
             />
+            <div className={this.state.activeTab === 'rated' ? 'rated-list-wrapper-active' : 'rated-list-wrapper'}>
+              <RatedList
+                page={this.state.currentPage}
+                movies={this.state.ratedMovies}
+                findGenres={this.findGenres}
+                sessionId={this.sessionId}
+                rateFilm={(id, session_id, rating) => this.rateFilm(id, session_id, rating)}
+              />
+            </div>
+            <Pagination
+              className={this.state.activeTab === 'rated' ? 'rated-pagination-active' : 'rated-pagination'}
+              current={1}
+              pageSize={20}
+              onChange={this.onChangePage}
+              showSizeChanger={false}
+            />
           </div>
-        </div>
-      </GenresProvider>
-    );
+        </GenresProvider>
+      );
+    }
   }
 }

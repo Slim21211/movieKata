@@ -15,6 +15,22 @@
     padding: 32px;
 }
 
-.pagination {
+.search-pagination-active {
+    margin: 0 auto;
+}
+
+.search-pagination {
+    display: none;
+}
+
+.rated-pagination-active {
+    margin: 0 auto;
+}
+
+.rated-pagination {
+    display: none;
+}
+
+.spinner {
     margin: 0 auto;
 }
