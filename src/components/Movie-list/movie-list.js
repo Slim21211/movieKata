@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import { GenresConsumer } from '../genres-context/genres-context';
 import { MovieCard } from '../Movie-card/movie-card';
@@ -29,3 +30,15 @@ export class MovieList extends Component {
     );
   }
 }
+
+MovieList.defaultProps = {
+  findGenres: () => {},
+  movies: [],
+  rateFilm: () => {},
+};
+
+MovieList.propTypes = {
+  findGenres: PropTypes.func,
+  movies: PropTypes.array,
+  rateFilm: PropTypes.func,
+};

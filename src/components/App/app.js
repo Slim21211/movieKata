@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import { Header } from '../Header/header';
 import { debounce } from 'lodash';
 import { Spin, Alert, Space, Pagination } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
@@ -9,9 +8,9 @@ import { SearchForm } from '../Search-form/search-form';
 import { MovieList } from '../Movie-list/movie-list';
 import { Tabs } from '../Tabs/tabs';
 import { RatedList } from '../Rated-list/rated-list';
+import { CheckConnection } from '../../services/check-connection';
 import MovieDB from '../../services/movie-db';
 
-// import { Footer } from '../Footer/footer';
 import './app.css';
 
 export class App extends Component {
@@ -159,6 +158,7 @@ export class App extends Component {
       return (
         <GenresProvider value={this.state.genresList}>
           <div className="main">
+            <CheckConnection />
             <div className="tabs-wrapper">
               <Tabs onChangeTab={(value) => this.onChangeTab(value)} activeTab={this.state.activeTab} />
             </div>
@@ -167,11 +167,7 @@ export class App extends Component {
             </div>
             <div className={this.state.activeTab === 'search' ? 'movie-list-wrapper-active' : 'movie-list-wrapper'}>
               <MovieList
-                page={this.state.currentPage}
                 movies={this.state.movies}
-                isLoaded={this.state.isLoaded}
-                error={this.state.error}
-                title={this.state.title}
                 findGenres={this.findGenres}
                 sessionId={this.sessionId}
                 rateFilm={(id, session_id, rating) => this.rateFilm(id, session_id, rating)}
@@ -185,13 +181,7 @@ export class App extends Component {
               showSizeChanger={false}
             />
             <div className={this.state.activeTab === 'rated' ? 'rated-list-wrapper-active' : 'rated-list-wrapper'}>
-              <RatedList
-                page={this.state.currentPage}
-                movies={this.state.ratedMovies}
-                findGenres={this.findGenres}
-                sessionId={this.sessionId}
-                rateFilm={(id, session_id, rating) => this.rateFilm(id, session_id, rating)}
-              />
+              <RatedList movies={this.state.ratedMovies} findGenres={this.findGenres} sessionId={this.sessionId} />
             </div>
             <Pagination
               className={this.state.activeTab === 'rated' ? 'rated-pagination-active' : 'rated-pagination'}

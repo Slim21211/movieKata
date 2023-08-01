@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './tabs.css';
 
 export class Tabs extends Component {
@@ -22,3 +23,13 @@ export class Tabs extends Component {
     );
   }
 }
+
+Tabs.defaultProps = {
+  onChangeTab: () => {},
+  activeTab: 'search',
+};
+
+Tabs.propTypes = {
+  onChangeTab: PropTypes.func,
+  activeTab: PropTypes.string,
+};

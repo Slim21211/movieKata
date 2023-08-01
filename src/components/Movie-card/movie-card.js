@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './movie-card.css';
 import { format } from 'date-fns';
 import { Rate } from 'antd';
@@ -82,3 +83,29 @@ export class MovieCard extends Component {
     }
   }
 }
+
+MovieCard.defaultProps = {
+  title: '',
+  date: '',
+  genres: [],
+  discription: '',
+  poster: '',
+  grade: 0,
+  filmId: 0,
+  rateFilm: () => {},
+  rating: 0,
+};
+
+MovieCard.propTypes = {
+  findGenres: PropTypes.func,
+  movies: PropTypes.array,
+  title: PropTypes.string,
+  date: PropTypes.string,
+  genres: PropTypes.array,
+  discription: PropTypes.string,
+  poster: PropTypes.string,
+  grade: PropTypes.number,
+  filmId: PropTypes.number,
+  rateFilm: PropTypes.func,
+  rating: PropTypes.number,
+};

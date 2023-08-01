@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import { debounce } from 'lodash';
+import PropTypes from 'prop-types';
 import './search-form.css';
 
 export class SearchForm extends Component {
@@ -30,3 +30,13 @@ export class SearchForm extends Component {
     );
   }
 }
+
+SearchForm.defaultProps = {
+  onChange: () => {},
+  page: 1,
+};
+
+SearchForm.propTypes = {
+  onChange: PropTypes.func,
+  page: PropTypes.number,
+};
