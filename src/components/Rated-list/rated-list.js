@@ -6,7 +6,7 @@ import './rated-list.css';
 
 export class RatedList extends Component {
   render() {
-    const { movies, findGenres, sessionId, rateFilm } = this.props;
+    const { movies, findGenres, sessionId } = this.props;
     return (
       <GenresConsumer>
         {(genresList) => {
@@ -24,7 +24,7 @@ export class RatedList extends Component {
                 grade={item.vote_average}
                 filmId={item.id}
                 sessionId={sessionId}
-                rateFilm={(id, session_id, rating) => rateFilm(id, session_id, rating)}
+                rating={item.rating}
               />
             ));
           }

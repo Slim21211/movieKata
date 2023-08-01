@@ -29,7 +29,7 @@ export class MovieCard extends Component {
   }
 
   render() {
-    const { title, date, genres, discription, poster, grade, filmId, sessionId, rateFilm } = this.props;
+    const { title, date, genres, discription, poster, grade, filmId, sessionId, rateFilm, rating } = this.props;
     try {
       return (
         <>
@@ -66,7 +66,7 @@ export class MovieCard extends Component {
                 className="rate"
                 allowHalf
                 defaultValue={0}
-                value={this.state.rating}
+                value={!rating ? this.state.rating : rating}
                 count={10}
                 onChange={(value) => {
                   this.setState({ rating: value });
