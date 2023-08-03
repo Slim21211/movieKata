@@ -61,43 +61,4 @@ export default class MovieDB {
     }
     return await response.json();
   }
-
-  // async ratedMovies() {
-  //   const response = await fetch(
-  //     `https://api.themoviedb.org/3/guest_session/${await this.getSessionId()}/rated/movies`
-  //   );
-  // }
-
-  async getSessionToken() {
-    const response = await fetch('https://api.themoviedb.org/3/authentication/token/new', this.options);
-    if (!response.ok) {
-      throw new Error(response.status);
-    }
-    const data = await response.json();
-    return await data.request_token;
-  }
-
-  async authentication() {
-    const response = await fetch(`https://www.themoviedb.org/authenticate/${await this.getSessionToken()}`);
-    if (!response.ok) {
-      throw new Error(response.status);
-    }
-    return await response.json();
-  }
-
-  async createSession() {
-    const response = await fetch('https://api.themoviedb.org/3/authentication/session/new', {
-      method: 'POST',
-      headers: {
-        accept: 'application/json',
-        'content-type': 'application/json',
-        Authorization: await this.getSessionId(),
-      },
-      body: JSON.stringify({ request_token: await this.getSessionToken() }),
-    });
-    if (!response.ok) {
-      throw new Error(response.status);
-    }
-    return await response.json();
-  }
 }

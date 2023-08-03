@@ -3,12 +3,13 @@ import { debounce } from 'lodash';
 import { Spin, Alert, Space, Pagination } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 
-import { GenresProvider } from '../genres-context/genres-context';
+import { GenresProvider } from '../../genres-context/genres-context';
 import { SearchForm } from '../Search-form/search-form';
 import { MovieList } from '../Movie-list/movie-list';
 import { Tabs } from '../Tabs/tabs';
 import { RatedList } from '../Rated-list/rated-list';
-import { CheckConnection } from '../../services/check-connection';
+import { Error } from '../Error/error';
+// import { CheckConnection } from '../../services/check-connection';
 import MovieDB from '../../services/movie-db';
 
 import './app.css';
@@ -28,6 +29,9 @@ export class App extends Component {
     error: false,
     genresList: [],
     activeTab: 'search',
+    ratedPage: 1,
+    totalRatedPage: 1,
+    isRatedPageChange: false,
   };
 
   antIcon = (
@@ -39,12 +43,6 @@ export class App extends Component {
     />
   );
 
-  // test = this.movieDb.getApiFilms(this.state.currentPage, this.state.title).then((data) => console.log(data));
-  // testGenres = this.movieDb.getGenres().then((data) => console.log(data.genres));
-  // testID = this.movieDb.getSessionId().then((data) => console.log(data));
-  // testToken = this.movieDb.getSessionToken().then((data) => console.log(data));
-  // testCreate = this.movieDb.createSession().then((data) => console.log(data));
-
   onChangePage = (page) => {
     this.setState({
       currentPage: page,
@@ -52,12 +50,26 @@ export class App extends Component {
     });
   };
 
+  onChangeRatedPage = (page) => {
+    this.setState({
+      ratedPage: page,
+      isRatedPageChange: true,
+    });
+  };
+
   async componentDidMount() {
     this.getFilms(this.state.currentPage, this.state.title);
     this.getGenres();
-
-    this.sessionId = await this.movieDb.getSessionId();
-    localStorage.setItem('sessionID', this.sessionId);
+    if (localStorage.getItem('sessionID') !== null) {
+      await this.getRatedFilms(localStorage.getItem('sessionID'), this.state.ratedPage).catch((error) => {
+        return <Error error={error.message} />;
+      });
+      this.sessionId = localStorage.getItem('sessionID');
+    } else {
+      this.sessId = await this.movieDb.getSessionId();
+      localStorage.setItem('sessionID', this.sessId);
+      this.sessionId = localStorage.getItem('sessionID');
+    }
   }
 
   componentDidUpdate(prevState) {
@@ -66,6 +78,12 @@ export class App extends Component {
         isPageChange: false,
       });
       this.getFilms(this.state.currentPage, this.state.title);
+    }
+    if (prevState.ratedPage !== this.state.ratedPage && this.state.isRatedPageChange) {
+      this.setState({
+        isRatedPageChange: false,
+      });
+      this.getRatedFilms(this.sessionId, this.state.ratedPage);
     }
   }
 
@@ -117,8 +135,12 @@ export class App extends Component {
 
   rateFilm = async (id, session_id = this.sessionId, rating) => {
     await this.movieDb.addRating(id, session_id, rating);
-    await this.movieDb.getRatedMovies(session_id, 1).then((data) => {
-      this.setState({ ratedMovies: data.results });
+    await this.getRatedFilms(session_id, 1);
+  };
+
+  getRatedFilms = async (session_id, page) => {
+    await this.movieDb.getRatedMovies(session_id, page).then((data) => {
+      this.setState({ ratedMovies: data.results, totalRatedPage: data.total_pages });
     });
   };
 
@@ -130,15 +152,7 @@ export class App extends Component {
 
   render() {
     if (this.state.error) {
-      return (
-        <Space
-          direction="vertical"
-          style={{ width: '50%', marginTop: 50, position: 'absolute', left: '25%' }}
-          wrapperClassName="search-form-wrapper"
-        >
-          <Alert message={`Error ${this.state.error.message}`} type="error" showIcon />
-        </Space>
-      );
+      return <Error error={this.state.error.message} />;
     } else if (!this.state.isLoaded) {
       return (
         <Spin
@@ -158,7 +172,7 @@ export class App extends Component {
       return (
         <GenresProvider value={this.state.genresList}>
           <div className="main">
-            <CheckConnection />
+            {/* <CheckConnection /> */}
             <div className="tabs-wrapper">
               <Tabs onChangeTab={(value) => this.onChangeTab(value)} activeTab={this.state.activeTab} />
             </div>
@@ -169,7 +183,6 @@ export class App extends Component {
               <MovieList
                 movies={this.state.movies}
                 findGenres={this.findGenres}
-                sessionId={this.sessionId}
                 rateFilm={(id, session_id, rating) => this.rateFilm(id, session_id, rating)}
               />
             </div>
@@ -181,14 +194,20 @@ export class App extends Component {
               showSizeChanger={false}
             />
             <div className={this.state.activeTab === 'rated' ? 'rated-list-wrapper-active' : 'rated-list-wrapper'}>
-              <RatedList movies={this.state.ratedMovies} findGenres={this.findGenres} sessionId={this.sessionId} />
+              <RatedList
+                movies={this.state.ratedMovies}
+                findGenres={this.findGenres}
+                sessionId={this.sessionId}
+                ratedPage={this.state.ratedPage}
+                totalRatedPage={this.state.totalRatedPage}
+              />
             </div>
             <Pagination
               className={this.state.activeTab === 'rated' ? 'rated-pagination-active' : 'rated-pagination'}
-              current={1}
-              pageSize={20}
-              onChange={this.onChangePage}
+              current={this.state.ratedPage}
+              onChange={this.onChangeRatedPage}
               showSizeChanger={false}
+              total={this.state.totalRatedPage * 10}
             />
           </div>
         </GenresProvider>
