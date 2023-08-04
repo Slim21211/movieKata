@@ -11,7 +11,10 @@ export default class MovieDB {
   };
 
   async getApiFilms(page, title) {
-    const response = await fetch(`${this.urlMovie}query=${title}&page=${page}`, this.options);
+    const url = new URL('https://api.themoviedb.org/3/search/movie?');
+    url.searchParams.set('query', title);
+    url.searchParams.set('page', page);
+    const response = await fetch(url, this.options);
 
     if (!response.ok) {
       throw new Error(response.status);
@@ -20,7 +23,8 @@ export default class MovieDB {
   }
 
   async getGenres() {
-    const response = await fetch('https://api.themoviedb.org/3/genre/movie/list', this.options);
+    const url = new URL('https://api.themoviedb.org/3/genre/movie/list');
+    const response = await fetch(url, this.options);
     if (!response.ok) {
       throw new Error(response.status);
     }
@@ -29,7 +33,8 @@ export default class MovieDB {
   }
 
   async getSessionId() {
-    const response = await fetch('https://api.themoviedb.org/3/authentication/guest_session/new', this.options);
+    const url = new URL('https://api.themoviedb.org/3/authentication/guest_session/new');
+    const response = await fetch(url, this.options);
     if (!response.ok) {
       throw new Error(response.status);
     }
@@ -38,24 +43,26 @@ export default class MovieDB {
   }
 
   async addRating(movie_id, session_id, value) {
-    const response = await fetch(
-      `https://api.themoviedb.org/3/movie/${movie_id}/rating?api_key=${this._apiKey}&guest_session_id=${session_id}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json;charset=utf-8',
-        },
-        body: JSON.stringify({ value }),
-      }
-    );
+    const url = new URL(`https://api.themoviedb.org/3/movie/${movie_id}/rating?`);
+    url.searchParams.set('api_key', this._apiKey);
+    url.searchParams.set('guest_session_id', session_id);
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify({ value }),
+    });
     if (!response.ok) {
       throw new Error(response.status);
     }
   }
 
   async getRatedMovies(session_id, page) {
-    const response = await fetch(`
-    https://api.themoviedb.org/3/guest_session/${session_id}/rated/movies?api_key=${this._apiKey}&page=${page}`);
+    const url = new URL(`https://api.themoviedb.org/3/guest_session/${session_id}/rated/movies?`);
+    url.searchParams.set('api_key', this._apiKey);
+    url.searchParams.set('page', page);
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error(response.status);
     }

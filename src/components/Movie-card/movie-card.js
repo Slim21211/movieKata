@@ -9,19 +9,32 @@ import img from '../../assets/kisspng-business-click-ecommerce-web-agency-servic
 export class MovieCard extends Component {
   state = {
     rating: 0,
+    ratingStyle: '',
   };
+
+  componentDidMount() {
+    this.setColor();
+  }
 
   setColor() {
     if (this.props.grade < 3) {
-      return '#E90000';
+      this.setState({
+        ratingStyle: 'awful-mark',
+      });
     }
     if (this.props.grade < 5) {
-      return '#E97E00';
+      this.setState({
+        ratingStyle: 'bad-mark',
+      });
     }
     if (this.props.grade < 7) {
-      return '#E9D100';
+      this.setState({
+        ratingStyle: 'good-mark',
+      });
     } else {
-      return '#66E900';
+      this.setState({
+        ratingStyle: 'great-mark',
+      });
     }
   }
 
@@ -40,9 +53,7 @@ export class MovieCard extends Component {
           <div className="movie-card__info">
             <div className="movie-card-title-wrapper">
               <h2 className="movie-card__title">{title}</h2>
-              <div className="movie-card-rating" style={{ border: `2px solid ${this.setColor()}` }}>
-                {grade.toFixed(1)}
-              </div>
+              <div className={`movie-card-rating ${this.state.ratingStyle}`}>{grade.toFixed(1)}</div>
             </div>
 
             <span className="movie-card__date">

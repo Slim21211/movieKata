@@ -61,12 +61,12 @@ export class App extends Component {
     this.getFilms(this.state.currentPage, this.state.title);
     this.getGenres();
     if (localStorage.getItem('sessionID') !== null) {
-      await this.getRatedFilms(localStorage.getItem('sessionID'), this.state.ratedPage).catch((error) => {
-        return <Error error={error.message} />;
-      });
+      await this.getRatedFilms(localStorage.getItem('sessionID'), this.state.ratedPage);
       this.sessionId = localStorage.getItem('sessionID');
     } else {
-      this.sessId = await this.movieDb.getSessionId();
+      this.sessId = await this.movieDb.getSessionId().catch((error) => {
+        return <Error error={error.message} />;
+      });
       localStorage.setItem('sessionID', this.sessId);
       this.sessionId = localStorage.getItem('sessionID');
     }
@@ -106,11 +106,16 @@ export class App extends Component {
   }, 350);
 
   async getGenres() {
-    await this.movieDb.getGenres().then((data) => {
-      this.setState({
-        genresList: data.genres,
+    await this.movieDb
+      .getGenres()
+      .then((data) => {
+        this.setState({
+          genresList: data.genres,
+        });
+      })
+      .catch((error) => {
+        return <Error error={error.message} />;
       });
-    });
   }
 
   onChangeRequest = (page, value) => {
@@ -134,14 +139,21 @@ export class App extends Component {
   }
 
   rateFilm = async (id, session_id = this.sessionId, rating) => {
-    await this.movieDb.addRating(id, session_id, rating);
+    await this.movieDb.addRating(id, session_id, rating).catch((error) => {
+      return <Error error={error.message} />;
+    });
     await this.getRatedFilms(session_id, 1);
   };
 
   getRatedFilms = async (session_id, page) => {
-    await this.movieDb.getRatedMovies(session_id, page).then((data) => {
-      this.setState({ ratedMovies: data.results, totalRatedPage: data.total_pages });
-    });
+    await this.movieDb
+      .getRatedMovies(session_id, page)
+      .then((data) => {
+        this.setState({ ratedMovies: data.results, totalRatedPage: data.total_pages });
+      })
+      .catch((error) => {
+        return <Error error={error.message} />;
+      });
   };
 
   onChangeTab = (value) => {
