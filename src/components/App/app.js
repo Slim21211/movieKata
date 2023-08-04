@@ -9,7 +9,7 @@ import { MovieList } from '../Movie-list/movie-list';
 import { Tabs } from '../Tabs/tabs';
 import { RatedList } from '../Rated-list/rated-list';
 import { Error } from '../Error/error';
-// import { CheckConnection } from '../../services/check-connection';
+import { CheckConnection } from '../Check-connection/check-connection';
 import MovieDB from '../../services/movie-db';
 
 import './app.css';
@@ -184,7 +184,7 @@ export class App extends Component {
       return (
         <GenresProvider value={this.state.genresList}>
           <div className="main">
-            {/* <CheckConnection /> */}
+            <CheckConnection />
             <div className="tabs-wrapper">
               <Tabs onChangeTab={(value) => this.onChangeTab(value)} activeTab={this.state.activeTab} />
             </div>
