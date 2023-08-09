@@ -21,7 +21,7 @@ export class MovieList extends Component {
               poster={item.poster_path}
               grade={item.vote_average}
               filmId={item.id}
-              rateFilm={(id, session_id, rating) => rateFilm(id, session_id, rating)}
+              rateFilm={(id, rating) => rateFilm(id, rating)}
             />
           ));
         }}

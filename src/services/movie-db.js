@@ -1,5 +1,5 @@
 export default class MovieDB {
-  urlMovie = 'https://api.themoviedb.org/3/search/movie?';
+  urlMovie = new URL('https://api.themoviedb.org/3/');
   _apiKey = 'd0c34b2999c270173aff6d9801767b47';
   options = {
     method: 'GET',
@@ -11,11 +11,10 @@ export default class MovieDB {
   };
 
   async getApiFilms(page, title) {
-    const url = new URL('https://api.themoviedb.org/3/search/movie?');
+    const url = new URL('search/movie?', this.urlMovie);
     url.searchParams.set('query', title);
     url.searchParams.set('page', page);
     const response = await fetch(url, this.options);
-
     if (!response.ok) {
       throw new Error(response.status);
     }
@@ -23,7 +22,7 @@ export default class MovieDB {
   }
 
   async getGenres() {
-    const url = new URL('https://api.themoviedb.org/3/genre/movie/list');
+    const url = new URL('genre/movie/list', this.urlMovie);
     const response = await fetch(url, this.options);
     if (!response.ok) {
       throw new Error(response.status);
@@ -33,7 +32,7 @@ export default class MovieDB {
   }
 
   async getSessionId() {
-    const url = new URL('https://api.themoviedb.org/3/authentication/guest_session/new');
+    const url = new URL('authentication/guest_session/new', this.urlMovie);
     const response = await fetch(url, this.options);
     if (!response.ok) {
       throw new Error(response.status);
@@ -42,8 +41,8 @@ export default class MovieDB {
     return await data.guest_session_id;
   }
 
-  async addRating(movie_id, session_id, value) {
-    const url = new URL(`https://api.themoviedb.org/3/movie/${movie_id}/rating?`);
+  async addRating(movie_id, value, session_id) {
+    const url = new URL(`movie/${movie_id}/rating?`, this.urlMovie);
     url.searchParams.set('api_key', this._apiKey);
     url.searchParams.set('guest_session_id', session_id);
     const response = await fetch(url, {
@@ -59,7 +58,7 @@ export default class MovieDB {
   }
 
   async getRatedMovies(session_id, page) {
-    const url = new URL(`https://api.themoviedb.org/3/guest_session/${session_id}/rated/movies?`);
+    const url = new URL(`guest_session/${session_id}/rated/movies?`, this.urlMovie);
     url.searchParams.set('api_key', this._apiKey);
     url.searchParams.set('page', page);
     const response = await fetch(url);

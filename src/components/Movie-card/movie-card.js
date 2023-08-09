@@ -39,7 +39,7 @@ export class MovieCard extends Component {
   }
 
   render() {
-    const { title, date, genres, discription, poster, grade, filmId, sessionId, rateFilm, rating } = this.props;
+    const { title, date, genres, discription, poster, grade, filmId, rateFilm, rating } = this.props;
     return (
       <>
         <div className="movie-card">
@@ -77,7 +77,7 @@ export class MovieCard extends Component {
               count={10}
               onChange={(value) => {
                 this.setState({ rating: value });
-                rateFilm(filmId, sessionId, value);
+                rateFilm(filmId, value);
               }}
             />
           </div>

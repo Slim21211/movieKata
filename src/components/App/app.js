@@ -43,6 +43,14 @@ export class App extends Component {
     />
   );
 
+  onError = (error) => {
+    this.setState({
+      error: true,
+      isLoaded: true,
+    });
+    return error.message;
+  };
+
   onChangePage = (page) => {
     this.setState({
       currentPage: page,
@@ -64,9 +72,7 @@ export class App extends Component {
       await this.getRatedFilms(localStorage.getItem('sessionID'), this.state.ratedPage);
       this.sessionId = localStorage.getItem('sessionID');
     } else {
-      this.sessId = await this.movieDb.getSessionId().catch((error) => {
-        return <Error error={error.message} />;
-      });
+      this.sessId = await this.movieDb.getSessionId();
       localStorage.setItem('sessionID', this.sessId);
       this.sessionId = localStorage.getItem('sessionID');
     }
@@ -97,25 +103,18 @@ export class App extends Component {
           totalPage: data.total_pages,
         });
       })
-      .catch((error) => {
-        this.setState({
-          isLoaded: true,
-          error,
-        });
-      });
+      .catch(this.onError);
   }, 350);
 
-  async getGenres() {
-    await this.movieDb
+  getGenres() {
+    this.movieDb
       .getGenres()
       .then((data) => {
         this.setState({
           genresList: data.genres,
         });
       })
-      .catch((error) => {
-        return <Error error={error.message} />;
-      });
+      .catch(this.onError);
   }
 
   onChangeRequest = (page, value) => {
@@ -138,10 +137,8 @@ export class App extends Component {
     return finalGenres;
   }
 
-  rateFilm = async (id, session_id = this.sessionId, rating) => {
-    await this.movieDb.addRating(id, session_id, rating).catch((error) => {
-      return <Error error={error.message} />;
-    });
+  rateFilm = async (id, rating, session_id = this.sessionId) => {
+    await this.movieDb.addRating(id, rating, session_id).catch(this.onError);
     await this.getRatedFilms(session_id, 1);
   };
 
@@ -151,9 +148,7 @@ export class App extends Component {
       .then((data) => {
         this.setState({ ratedMovies: data.results, totalRatedPage: data.total_pages });
       })
-      .catch((error) => {
-        return <Error error={error.message} />;
-      });
+      .catch(this.onError);
   };
 
   onChangeTab = (value) => {
@@ -164,7 +159,7 @@ export class App extends Component {
 
   render() {
     if (this.state.error) {
-      return <Error error={this.state.error.message} />;
+      return <Error />;
     } else if (!this.state.isLoaded) {
       return (
         <Spin
@@ -195,7 +190,7 @@ export class App extends Component {
               <MovieList
                 movies={this.state.movies}
                 findGenres={this.findGenres}
-                rateFilm={(id, session_id, rating) => this.rateFilm(id, session_id, rating)}
+                rateFilm={(id, rating) => this.rateFilm(id, rating)}
               />
             </div>
             <Pagination
